@@ -1,0 +1,17 @@
+node_modules/
+.next/
+out/
+build/
+.DS_Store
+*.log
+.env*.local
+.vercel
+*.tsbuildinfo
+next-env.d.ts
+
+# Local tooling — Claude Code preview config
+.claude/
+
+# OneDrive metadata
+desktop.ini
+Thumbs.db
