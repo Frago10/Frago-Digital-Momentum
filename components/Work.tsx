@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
+import { CASE_STUDIES } from "@/lib/cases";
 
 type Card = {
   num: string;
@@ -12,23 +14,23 @@ type Card = {
   gradient: string;
   /** Optional accent color for the magenta-blend halo */
   accent: string;
+  /** Slug if this card links to a real case study */
+  slug?: string;
+  /** Client name shown when slug present */
+  client?: string;
 };
 
+// First two cards are real cases (link out); rest are placeholders.
 const CARDS: Card[] = [
-  {
-    num: "01",
-    category: "Brand Identity",
-    year: "2026",
-    gradient: "from-[#2b0a1a] via-[#4a0f2a] to-[#ff2d8d]",
-    accent: "#ff2d8d",
-  },
-  {
-    num: "02",
-    category: "Campaign · Motion",
-    year: "2026",
-    gradient: "from-[#0d0d10] via-[#1f1027] to-[#7a1f5a]",
-    accent: "#ff7ab8",
-  },
+  ...CASE_STUDIES.map((c) => ({
+    num: c.num,
+    category: c.category,
+    year: c.year,
+    gradient: c.gradient,
+    accent: c.accent,
+    slug: c.slug,
+    client: c.client,
+  })),
   {
     num: "03",
     category: "Founder Story",
@@ -84,22 +86,22 @@ function WorkCard({ card, index }: { card: Card; index: number }) {
     my.set(0);
   };
 
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.25 }}
-      transition={{ duration: 0.9, delay: (index % 3) * 0.08, ease: [0.16, 1, 0.3, 1] }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ rotateX: rx, rotateY: ry, transformPerspective: 1200 }}
-      data-cursor="view"
-      data-cursor-label="Ver case"
-      className="group relative cursor-pointer"
-    >
-      {/* Card frame */}
-      <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/[0.06] bg-momentum-ink transition-all duration-500 group-hover:border-momentum-magenta/40 group-hover:shadow-lift">
+  const motionProps = {
+    ref,
+    initial: { opacity: 0, y: 32 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, amount: 0.25 },
+    transition: { duration: 0.9, delay: (index % 3) * 0.08, ease: [0.16, 1, 0.3, 1] as const },
+    onMouseMove: handleMouseMove,
+    onMouseLeave: handleMouseLeave,
+    style: { rotateX: rx, rotateY: ry, transformPerspective: 1200 },
+    "data-cursor": "view",
+    "data-cursor-label": card.slug ? `Ver ${card.client}` : "Slot disponible",
+    className: "group relative cursor-pointer block",
+  };
+
+  const inner = (
+    <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-white/[0.06] bg-momentum-ink transition-all duration-500 group-hover:border-momentum-magenta/40 group-hover:shadow-lift">
         {/* Gradient visual area with parallax */}
         <motion.div
           style={{ x: px, y: py }}
@@ -127,26 +129,26 @@ function WorkCard({ card, index }: { card: Card; index: number }) {
           </div>
         </div>
 
-        {/* Center label — visible by default, fades on hover */}
+        {/* Default state */}
         <div className="absolute inset-0 grid place-items-center transition-opacity duration-500 group-hover:opacity-0">
           <div className="text-center">
             <div className="font-display text-[10px] tracking-[0.4em] text-momentum-chalk/40 mb-2">
-              CASE STUDY
+              {card.slug ? "CASE STUDY" : "PRÓXIMAMENTE"}
             </div>
-            <div className="font-display text-3xl md:text-4xl text-momentum-chalk/85 tracking-editorial">
-              Próximamente
+            <div className="font-display text-3xl md:text-4xl text-momentum-chalk/85 tracking-editorial px-4">
+              {card.slug ? card.client : "Slot disponible"}
             </div>
           </div>
         </div>
 
-        {/* Hover-reveal — "Available 2026" with magnetic CTA */}
+        {/* Hover state */}
         <div className="absolute inset-0 grid place-items-center opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
           <div className="text-center">
             <div className="font-display text-[10px] tracking-[0.4em] text-momentum-chalk/60 mb-3">
-              AVAILABLE Q3 · {card.year}
+              {card.slug ? "VER CASE STUDY" : `AVAILABLE Q3 · ${card.year}`}
             </div>
             <div className="inline-flex items-center gap-2 font-display text-lg md:text-xl text-momentum-chalk tracking-editorial">
-              Reservar slot
+              {card.slug ? "Leer caso completo" : "Reservar slot"}
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                 <path d="M3 7h8M7.5 3.5 11 7l-3.5 3.5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -169,8 +171,18 @@ function WorkCard({ card, index }: { card: Card; index: number }) {
           <div className="h-px bg-gradient-to-r from-transparent via-momentum-magenta to-transparent scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-700" />
         </div>
       </div>
-    </motion.div>
   );
+
+  if (card.slug) {
+    return (
+      <motion.div {...motionProps}>
+        <Link href={`/work/${card.slug}/`} className="block">
+          {inner}
+        </Link>
+      </motion.div>
+    );
+  }
+  return <motion.div {...motionProps}>{inner}</motion.div>;
 }
 
 export function Work() {

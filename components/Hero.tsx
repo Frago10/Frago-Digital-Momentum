@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { MagneticButton } from "./MagneticButton";
 import { SplitText } from "./SplitText";
+import { useIsDesktop } from "@/lib/useIsDesktop";
 
 const MomentumScene = dynamic(
   () => import("./scenes/MomentumScene").then((m) => m.MomentumScene),
@@ -23,6 +24,18 @@ function useInViewport(ref: React.RefObject<HTMLElement | null>, rootMargin = "1
     return () => io.disconnect();
   }, [ref, rootMargin]);
   return inView;
+}
+
+/** Mobile fallback for the 3D scene — pure CSS, zero GPU cost. */
+function MobileSceneFallback() {
+  return (
+    <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute right-[-15%] top-1/2 -translate-y-1/2 w-[120%] h-[80%] max-w-[600px] aspect-square">
+        <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_35%_35%,_rgba(255,123,184,0.6)_0%,_rgba(255,45,141,0.45)_30%,_rgba(122,15,63,0.25)_60%,_transparent_75%)] blur-md" />
+        <div className="absolute inset-[15%] rounded-full bg-[radial-gradient(circle,_rgba(255,45,141,0.55)_0%,_transparent_60%)] mix-blend-screen animate-magenta-pulse" />
+      </div>
+    </div>
+  );
 }
 
 const REVEAL = {
@@ -45,7 +58,8 @@ const FADE_UP = {
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
-  const sceneActive = useInViewport(ref, "200px");
+  const isDesktop = useIsDesktop();
+  const sceneActive = useInViewport(ref, "200px") && isDesktop;
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const yScene = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
   const yCopy = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
@@ -60,12 +74,12 @@ export function Hero() {
       {/* Radial magenta glow */}
       <div className="pointer-events-none absolute inset-0 bg-magenta-radial opacity-70" />
 
-      {/* 3D scene layer — only mounted while hero is in viewport */}
+      {/* 3D scene layer — only mounted on desktop while hero is in viewport */}
       <motion.div
         style={{ y: yScene }}
         className="absolute inset-0 z-0"
       >
-        {sceneActive && <MomentumScene />}
+        {sceneActive ? <MomentumScene /> : <MobileSceneFallback />}
       </motion.div>
 
       {/* Vignette overlay */}

@@ -3,25 +3,48 @@ import "./globals.css";
 import { Cursor } from "@/components/Cursor";
 import { Intro } from "@/components/Intro";
 
+const SITE_URL = "https://frago10.github.io/Frago-Digital-Momentum";
+
 export const metadata: Metadata = {
-  title: "Frago's Momentum Media — Movemos ideas. Conectamos marcas.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Frago's Momentum Media — Movemos ideas. Conectamos marcas.",
+    template: "%s · Frago's Momentum Media",
+  },
   description:
     "Ecosistema creativo premium para marcas que quieren ganar momentum: branding, storytelling, posicionamiento digital y sistemas de contenido de alto nivel.",
   keywords: [
     "branding",
-    "agencia creativa",
-    "marketing premium",
+    "agencia creativa premium",
+    "marketing growth",
     "storytelling",
     "content systems",
     "growth ecosystems",
     "Momentum Media",
-    "Frago",
+    "Frago Vanguard",
+    "diseño de marca",
+    "estrategia digital",
   ],
   authors: [{ name: "Frago's Momentum Media" }],
+  creator: "Frago Vanguard Group",
+  publisher: "Frago's Momentum Media",
   openGraph: {
     title: "Frago's Momentum Media",
     description: "Movemos ideas. Conectamos marcas. Impulsamos crecimiento.",
     type: "website",
+    locale: "es_ES",
+    url: SITE_URL,
+    siteName: "Frago's Momentum Media",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Frago's Momentum Media",
+    description: "Ecosistema creativo premium. Movemos ideas. Conectamos marcas.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large" },
   },
 };
 

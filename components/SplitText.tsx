@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -25,11 +25,9 @@ type Props = {
  * SplitText — character/word-level reveal on viewport or mount.
  * Honors `prefers-reduced-motion`.
  *
- * Usage:
- *   <SplitText text="Movemos ideas que construyen marcas." as="h1" />
- *
- * For mixed-style text (e.g. one phrase magenta), wrap multiple SplitText
- * in a parent element with the staggered delay you want.
+ * SSR-SAFE: renders plain text on the server, swaps to animated chars after
+ * mount. Prevents the static-export bug where motion's `initial={opacity:0}`
+ * would bake into the HTML and (if hydration ever stalls) leave text invisible.
  */
 export function SplitText({
   text,
@@ -42,26 +40,47 @@ export function SplitText({
   effect = "rise",
 }: Props) {
   const reduced = useReducedMotion();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const segments = useMemo(() => {
     if (by === "word") return text.split(" ");
     return text.split("");
   }, [text, by]);
 
-  const initial =
-    reduced ? { opacity: 0 } :
-    effect === "rise" ? { opacity: 0, y: "75%" } :
-    effect === "blur" ? { opacity: 0, filter: "blur(8px)" } :
-    { opacity: 0 };
-  const animate =
-    reduced ? { opacity: 1 } :
-    effect === "rise" ? { opacity: 1, y: "0%" } :
-    effect === "blur" ? { opacity: 1, filter: "blur(0px)" } :
-    { opacity: 1 };
-
   const Wrapper = as as keyof React.JSX.IntrinsicElements;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const WrapperAny = Wrapper as any;
+
+  // On the server (and the first client render before mount), render plain
+  // text. This way no opacity-0 inline styles ever ship in static HTML.
+  if (!mounted) {
+    return (
+      <WrapperAny className={cn(className)} aria-label={text}>
+        {text}
+      </WrapperAny>
+    );
+  }
+
+  const initial =
+    reduced
+      ? { opacity: 0 }
+      : effect === "rise"
+        ? { opacity: 0, y: "75%" }
+        : effect === "blur"
+          ? { opacity: 0, filter: "blur(8px)" }
+          : { opacity: 0 };
+  const animate =
+    reduced
+      ? { opacity: 1 }
+      : effect === "rise"
+        ? { opacity: 1, y: "0%" }
+        : effect === "blur"
+          ? { opacity: 1, filter: "blur(0px)" }
+          : { opacity: 1 };
 
   const inner = segments.map((seg, i) => {
     const isSpace = seg === " ";
@@ -84,7 +103,7 @@ export function SplitText({
           }}
           className="inline-block will-change-transform"
         >
-          {isSpace ? " " : seg}
+          {isSpace ? " " : seg}
         </motion.span>
         {by === "word" && i < segments.length - 1 && (
           <span aria-hidden="true">&nbsp;</span>

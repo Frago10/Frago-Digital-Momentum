@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import { motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { MagneticButton } from "./MagneticButton";
+import { ContactForm } from "./ContactForm";
+import { useIsDesktop } from "@/lib/useIsDesktop";
 
 const ParticleField = dynamic(
   () => import("./scenes/ParticleField").then((m) => m.ParticleField),
@@ -26,7 +28,8 @@ function useInViewport(ref: React.RefObject<HTMLElement | null>, rootMargin = "2
 
 export function CTA() {
   const ref = useRef<HTMLElement>(null);
-  const particlesActive = useInViewport(ref, "200px");
+  const isDesktop = useIsDesktop();
+  const particlesActive = useInViewport(ref, "200px") && isDesktop;
   return (
     <section
       id="contacto"
@@ -68,22 +71,15 @@ export function CTA() {
             </span>
           </motion.h2>
 
+          {/* Contact form — replaces dual-button row */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.5 }}
-            transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-12 flex flex-wrap items-center justify-center gap-3"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-14"
           >
-            <MagneticButton href="mailto:hola@fragosmomentum.com" pull={0.4} labelPull={0.6}>
-              Iniciar proyecto
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                <path d="M3 7h8M7.5 3.5 11 7l-3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </MagneticButton>
-            <a href="#filosofia" className="btn-ghost">
-              Conocer la filosofía
-            </a>
+            <ContactForm />
           </motion.div>
 
           <motion.div
