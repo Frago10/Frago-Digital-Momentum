@@ -59,7 +59,9 @@ export function SplitText({
     effect === "blur" ? { opacity: 1, filter: "blur(0px)" } :
     { opacity: 1 };
 
-  const Wrapper = as as React.ElementType;
+  const Wrapper = as as keyof React.JSX.IntrinsicElements;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const WrapperAny = Wrapper as any;
 
   const inner = segments.map((seg, i) => {
     const isSpace = seg === " ";
@@ -92,8 +94,8 @@ export function SplitText({
   });
 
   return (
-    <Wrapper className={cn(className)} aria-label={text}>
+    <WrapperAny className={cn(className)} aria-label={text}>
       {inner}
-    </Wrapper>
+    </WrapperAny>
   );
 }

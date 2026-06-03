@@ -1,6 +1,6 @@
 node_modules/
 .next/
-out/
+/out/
 build/
 .DS_Store
 *.log
@@ -15,3 +15,4 @@ next-env.d.ts
 # OneDrive metadata
 desktop.ini
 Thumbs.db
+.commit-msg.txt

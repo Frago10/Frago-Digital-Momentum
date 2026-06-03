@@ -75,7 +75,6 @@ export function MagneticButton({
 
   if (href) {
     return (
-      // @ts-expect-error motion span as inline-block magnet wrapper
       <motion.span {...shellProps}>
         <a href={href} className="btn-magenta inline-flex items-center" onClick={onClick}>
           {inner}
@@ -85,7 +84,6 @@ export function MagneticButton({
   }
 
   return (
-    // @ts-expect-error motion span as inline-block magnet wrapper
     <motion.span {...shellProps}>
       <button type={type} className="btn-magenta inline-flex items-center" onClick={onClick}>
         {inner}
