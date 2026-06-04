@@ -4,10 +4,14 @@ import { Cursor } from "@/components/Cursor";
 import { Intro } from "@/components/Intro";
 import { SoundSystem } from "@/components/SoundSystem";
 
-const SITE_URL = "https://frago10.github.io/Frago-Digital-Momentum";
+// metadataBase is the bare origin so Next.js can compose URLs with basePath
+// once, without doubling it (which produced /Frago-Digital-Momentum/Frago-...
+// in og:image previously).
+const ORIGIN = "https://frago10.github.io";
+const SITE_URL = `${ORIGIN}/Frago-Digital-Momentum`;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
+  metadataBase: new URL(ORIGIN),
   title: {
     default: "Frago's Momentum Media — Movemos ideas. Conectamos marcas.",
     template: "%s · Frago's Momentum Media",
@@ -34,7 +38,7 @@ export const metadata: Metadata = {
     description: "Movemos ideas. Conectamos marcas. Impulsamos crecimiento.",
     type: "website",
     locale: "es_ES",
-    url: SITE_URL,
+    url: SITE_URL + "/",
     siteName: "Frago's Momentum Media",
   },
   twitter: {
