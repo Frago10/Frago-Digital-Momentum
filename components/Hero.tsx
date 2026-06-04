@@ -103,15 +103,17 @@ export function Hero() {
           Frago&apos;s · Creative Growth Ecosystem
         </motion.div>
 
-        {/* Massive headline with char-level reveal */}
-        <h1 className="font-display font-medium tracking-editorial leading-[0.92] text-[clamp(3.2rem,9.5vw,11rem)] max-w-[18ch]">
+        {/* Massive headline with char-level reveal — solid brand colors so
+            each char paints reliably (gradient-clip can't survive nested
+            inline-block split chars across all browsers/screens). */}
+        <h1 className="font-display font-medium tracking-editorial leading-[0.92] text-[clamp(3.2rem,9.5vw,11rem)] max-w-[18ch] drop-shadow-[0_2px_30px_rgba(255,45,141,0.15)]">
           <SplitText
             as="span"
             text="Movemos"
             trigger="mount"
             delay={0.55}
             stagger={0.035}
-            className="block text-chalk-metallic"
+            className="block text-momentum-chalk"
           />
           <SplitText
             as="span"
@@ -119,7 +121,7 @@ export function Hero() {
             trigger="mount"
             delay={0.72}
             stagger={0.035}
-            className="block text-chalk-metallic"
+            className="block text-momentum-chalk"
           />
           <SplitText
             as="span"
@@ -127,7 +129,7 @@ export function Hero() {
             trigger="mount"
             delay={0.92}
             stagger={0.025}
-            className="block text-magenta-gradient"
+            className="block text-momentum-magenta"
           />
         </h1>
 

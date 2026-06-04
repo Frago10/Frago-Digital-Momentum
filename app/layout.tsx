@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Cursor } from "@/components/Cursor";
 import { Intro } from "@/components/Intro";
+import { SoundSystem } from "@/components/SoundSystem";
 
 const SITE_URL = "https://frago10.github.io/Frago-Digital-Momentum";
 
@@ -70,10 +71,11 @@ export default function RootLayout({
         />
       </head>
       <body className="font-body antialiased bg-momentum-void text-momentum-chalk">
-        {/* Intro + Cursor live OUTSIDE the template wrapper so they aren't
-            affected by per-route fade transitions. */}
+        {/* Intro + Cursor + SoundSystem live OUTSIDE the template wrapper
+            so they aren't affected by per-route fade transitions. */}
         <Intro />
         <Cursor />
+        <SoundSystem />
         {children}
       </body>
     </html>

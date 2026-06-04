@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { LogoLockup } from "./brand/LogoMark";
+import { SoundToggle } from "./SoundToggle";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -67,7 +68,8 @@ export function Nav() {
               ))}
             </nav>
 
-            <div className="hidden md:flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2.5">
+              <SoundToggle />
               <a href="#contacto" className="btn-magenta text-xs">
                 Hablemos
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
