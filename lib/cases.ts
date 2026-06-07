@@ -104,6 +104,88 @@ export const CASE_STUDIES: CaseStudy[] = [
       role: "CEO, Norte Capital",
     },
   },
+  {
+    slug: "sofia-collective",
+    num: "03",
+    category: "Brand Story · Social Ecosystem",
+    year: "2025",
+    client: "Sofía Collective",
+    title: "El restaurante que se convirtió en comunidad.",
+    subtitle:
+      "Transformamos un concepto gastronómico boutique en una marca cultural con su propio ecosistema de contenido y comunidad digital activa.",
+    gradient: "from-[#0f0a00] via-[#2a1500] to-[#c45000]",
+    accent: "#ff7a20",
+    duration: "12 semanas",
+    scope: [
+      "Narrative brand positioning",
+      "Social media identity & guidelines",
+      "Content ecosystem — 90 piezas",
+      "Estrategia UGC + creator partnerships",
+      "Community playbook para el equipo",
+    ],
+    challenge:
+      "Sofía tenía sala llena los fines de semana pero era invisible digitalmente. Sin presencia social que justificara el ticket, perdían reservas frente a competidores con producto inferior pero mejor narrativa.",
+    approach: [
+      "Mapeamos la experiencia emocional del cliente: ¿qué siente, qué recuerda, qué comparte? Ahí encontramos el hilo narrativo.",
+      "Diseñamos un sistema de contenido en 3 capas: Mundo Sofía (el concepto y los valores), Ritual (producto y proceso), Gente (equipo y comunidad).",
+      "Produjimos un set semilla de 90 piezas para los primeros 3 meses + manual para que el equipo interno siguiera generando con coherencia.",
+      "Activamos 4 micro-creators locales con brief editorial para amplificar sin perder voz.",
+    ],
+    outcome:
+      "En 3 meses Sofía pasó de 2K a 31K seguidores orgánicos. Las reservas online crecieron un 78% y empezaron a tener lista de espera los martes y jueves — antes días muertos.",
+    metrics: [
+      { label: "Crecimiento de audiencia", value: "+1,450%", trend: "up" },
+      { label: "Reservas online", value: "+78%", trend: "up" },
+      { label: "UGC generado", value: "340 piezas" },
+      { label: "Tasa de ocupación L-J", value: "+55%", trend: "up" },
+    ],
+    quote: {
+      body: "Antes teníamos clientes. Ahora tenemos comunidad. Y la comunidad no necesita descuentos para volver.",
+      author: "Sofía Amaya",
+      role: "Founder & Chef, Sofía Collective",
+    },
+  },
+  {
+    slug: "vela-studios",
+    num: "04",
+    category: "Launch Campaign · Digital Presence",
+    year: "2025",
+    client: "Vela Studios",
+    title: "Cero a referente en 60 días.",
+    subtitle:
+      "Lanzamos la identidad digital, la narrativa de lanzamiento y el sistema de adquisición de clientes de un estudio creativo desde cero.",
+    gradient: "from-[#020510] via-[#0a0f2e] to-[#1a2aff]",
+    accent: "#4d6aff",
+    duration: "8 semanas",
+    scope: [
+      "Posicionamiento y messaging de lanzamiento",
+      "Identidad verbal + copywriting web",
+      "Campaña de lanzamiento — 3 fases",
+      "Outreach system para primeros clientes",
+      "Press kit + medios especializados",
+    ],
+    challenge:
+      "Vela arrancaba sin portfolio, sin audiencia y en un mercado que premia el historial. Necesitaban una narrativa que convirtiera esa carencia en punto de vista diferencial.",
+    approach: [
+      "Reencuadramos el 'sin clientes todavía' en ventaja: 'sin vicios, sin inercias, con todo por demostrar'. El hambre como propuesta de valor.",
+      "Diseñamos una campaña en 3 fases — Cuenta regresiva (misterio + anticipación), Día 0 (lanzamiento full), 30 días (prueba social acelerada).",
+      "Construimos un outreach system para 80 prospectos cualificados con secuencia de 4 touchpoints personalizados.",
+      "Aseguramos cobertura en 2 medios especializados de diseño antes del lanzamiento para crear efecto de credibilidad instantánea.",
+    ],
+    outcome:
+      "El día de lanzamiento cerraron 3 proyectos en simultáneo. A los 60 días tenían lista de espera y habían rechazado 2 proyectos que no encajaban con su posicionamiento — algo impensable antes.",
+    metrics: [
+      { label: "Proyectos cerrados — semana 1", value: "3", trend: "up" },
+      { label: "Inbound leads — 60 días", value: "47", trend: "up" },
+      { label: "Cobertura en prensa especializada", value: "2 medios" },
+      { label: "Tasa de cierre outreach", value: "34%", trend: "up" },
+    ],
+    quote: {
+      body: "Momentum nos dio lo que nadie da a un estudio nuevo: credibilidad prestada el día uno. El resto fue nuestro.",
+      author: "Carlos Vela",
+      role: "Creative Director, Vela Studios",
+    },
+  },
 ];
 
 export function getCase(slug: string): CaseStudy | undefined {

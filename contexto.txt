@@ -1,0 +1,236 @@
+===========================================================================
+  FRAGO'S MOMENTUM MEDIA — CONTEXTO DE PROYECTO
+  Última actualización: 2026-06-06
+  Leer este archivo PRIMERO antes de hacer cualquier cambio al proyecto.
+===========================================================================
+
+------------------------------------------------------------------------
+1. OVERVIEW DEL PROYECTO
+------------------------------------------------------------------------
+Nombre:       Frago's Momentum Media
+Tipo:         Agencia creativa / marketing de crecimiento premium
+Stack:        Next.js 15.5.19 + React 19 + Tailwind v3 + Motion v11 + R3F v9 + Drei v10
+Repo GitHub:  https://github.com/Frago10/Frago-Digital-Momentum
+GitHub Pages: https://frago10.github.io/Frago-Digital-Momentum/ (backup deploy)
+Vercel:       Importar repo en vercel.com/new (primary deploy, zero-config)
+Local dev:    npm run dev → http://localhost:3000
+
+Directorio local:
+  C:\Users\jeanp\OneDrive\מסמכים\Frago corp\Fragos Momentum Media\
+
+IMPORTANTE: OneDrive Files-On-Demand puede causar EINVAL en builds.
+Fix: correr en terminal con permisos admin:
+  attrib +P "C:\Users\jeanp\OneDrive\מסמכים\Frago corp\Fragos Momentum Media" /S /D
+
+------------------------------------------------------------------------
+2. BRAND + IDENTIDAD VISUAL
+------------------------------------------------------------------------
+Paleta principal:
+  void:         #050505  (fondo negro absoluto)
+  ink:          #0a0a0c
+  smoke:        #16161a
+  steel:        #1f1f24
+  mist:         #cfcfd2
+  chalk:        #F2F2F2  (texto principal claro)
+  magenta:      #FF2D8D  (acento hero / CTA)
+  magenta-soft: #ff5ba8
+  magenta-deep: #c4196b
+  magenta-glow: #ff7ab8
+
+Tipografía (via Fontshare CDN — NO Google Fonts, SSL bloqueado en Windows/OneDrive):
+  display:  Cabinet Grotesk (800, 500, 400)
+  ui:       Satoshi (900, 700, 500, 400)
+  body:     Inter (400, 500, 600, 700)
+
+Logo: Chevron V5 — doble chevron blanco+magenta apuntando arriba
+  Archivo: components/brand/LogoMark.tsx
+  Path exterior (blanco): M 60 12 L 108 90 L 92 90 L 60 38 L 28 90 L 12 90 Z
+  Path interior (magenta): M 60 46 L 86 90 L 74 90 L 60 66 L 46 90 L 34 90 Z
+  Línea base magenta: rect y=98
+
+------------------------------------------------------------------------
+3. ARQUITECTURA DE ARCHIVOS CLAVE
+------------------------------------------------------------------------
+app/
+  layout.tsx          — Root layout, metadata, Vercel Analytics, Fontshare CDN
+  template.tsx        — Per-route transition (magenta sweep overlay)
+  page.tsx            — Homepage (Hero + About + Services + Work + Manifesto + CTA + Contact)
+  globals.css         — Base styles, Tailwind directives
+  robots.ts           — robots.txt (force-static)
+  sitemap.ts          — sitemap.xml (force-static)
+  opengraph-image.tsx — OG image 1200×630 (funciona en Linux CI, falla localmente en Windows Hebrew path)
+  work/
+    [slug]/page.tsx   — Case study dinámico (generateStaticParams)
+
+components/
+  brand/
+    LogoMark.tsx      — SVG chevron logo (V5 final)
+  scenes/
+    MomentumScene.tsx — R3F liquid chrome sphere + partículas
+  Hero.tsx            — Sección hero con R3F scene
+  About.tsx           — Filosofía / manifiesto
+  Services.tsx        — Servicios premium (4 cards)
+  Work.tsx            — Grid de case studies
+  Manifesto.tsx       — Sección con Spline embed (Clarity Stream)
+  SplineEmbed.tsx     — Wrapper para @splinetool/react-spline
+  CTA.tsx             — Llamada a acción final
+  ContactForm.tsx     — Formulario Formspree (actualmente en demo mode)
+  Nav.tsx             — Navegación sticky con scroll-aware
+  Footer.tsx          — Footer con logo + links
+  Cursor.tsx          — Cursor custom animado (solo desktop)
+  Intro.tsx           — Loader de primera visita (sessionStorage)
+  SplitText.tsx       — Animación de texto char-by-char (SSR-safe)
+  MagneticButton.tsx  — Botón con efecto magnético
+  SoundToggle.tsx     — Toggle de sonido en navbar (OFF por defecto)
+  SoundSystem.tsx     — Inicializador del sistema de audio
+
+lib/
+  cases.ts            — Datos de case studies (04 activos: lumen, norte, sofia, vela)
+  sound.ts            — Web Audio API procedural (sin archivos de audio)
+  useIsDesktop.ts     — Hook para detectar desktop (min-width: 768px + pointer: fine)
+
+------------------------------------------------------------------------
+4. CONFIGURACIONES CRÍTICAS
+------------------------------------------------------------------------
+
+next.config.mjs:
+  - reactStrictMode: false  (IMPORTANTE: double-mount quema sessionStorage del Intro)
+  - transpilePackages: ["three", "@splinetool/react-spline", "@splinetool/runtime"]
+  - webpack alias: "@splinetool/react-spline/next" → dist/react-spline-next.js
+    (resuelve bug de exports field restrictivo del paquete)
+  - GITHUB_PAGES=true activa static export + basePath "/Frago-Digital-Momentum"
+  - Sin esa var, Vercel usa modo server normal (Next.js estándar)
+
+tailwind.config.ts:
+  - Todos los colores de marca bajo token "momentum.*"
+  - content: incluye app/**/*.{ts,tsx} y components/**/*.{ts,tsx}
+
+vercel.json:
+  - framework: "nextjs"
+  - buildCommand: "npm run build"
+  - outputDirectory: ".next"
+  (Zero-config, solo importar repo en Vercel)
+
+------------------------------------------------------------------------
+5. DEPLOY — DOS TARGETS
+------------------------------------------------------------------------
+PRIMARIO — Vercel:
+  1. vercel.com/new → Import Frago10/Frago-Digital-Momentum
+  2. Click Deploy (zero config)
+  3. En Project Settings → Environment Variables:
+     NEXT_PUBLIC_SITE_URL = https://tu-dominio.com (cuando tengas custom domain)
+  4. Vercel Analytics activo automáticamente (ya está wired en layout.tsx)
+
+BACKUP — GitHub Pages:
+  - Workflow: .github/workflows/deploy.yml
+  - Auto-trigger en push a main
+  - URL: https://frago10.github.io/Frago-Digital-Momentum/
+
+Variables de entorno:
+  NEXT_PUBLIC_SITE_URL      → URL canónica custom (Vercel settings)
+  NEXT_PUBLIC_VERCEL_URL    → Auto-set por Vercel (no configurar)
+  GITHUB_PAGES              → Solo en GitHub Actions (no en Vercel, no local)
+  FORMSPREE_ENDPOINT        → Pegar en components/ContactForm.tsx línea ~14
+
+------------------------------------------------------------------------
+6. SPLINE — CLARITY STREAM
+------------------------------------------------------------------------
+URL del usuario: https://my.spline.design/claritystream-47nWn6btZt2mxZghMzV4krxa/
+URL de embed usada en código: https://prod.spline.design/claritystream-47nWn6btZt2mxZghMzV4krxa/scene.splinecode
+
+Ubicación: components/Manifesto.tsx — constante SPLINE_SCENE
+El embed carga dinámico (ssr:false) → no bloquea render
+LiquidFallback se muestra mientras carga o si no hay WebGL
+
+------------------------------------------------------------------------
+7. CASE STUDIES (lib/cases.ts)
+------------------------------------------------------------------------
+01 — lumen-athletica    Brand Identity · Motion             2026
+02 — norte-capital      Digital Positioning · Content       2026
+03 — sofia-collective   Brand Story · Social Ecosystem      2025
+04 — vela-studios       Launch Campaign · Digital Presence  2025
+
+Slots 05 y 06 están en Work.tsx como "Próximamente" (placeholders).
+Para agregar nuevos: añadir objeto al array CASE_STUDIES en lib/cases.ts.
+El slug se convierte automáticamente en ruta /work/[slug].
+
+------------------------------------------------------------------------
+8. ANALYTICS (Step 8 — COMPLETADO)
+------------------------------------------------------------------------
+Packages instalados: @vercel/analytics@^1.5.0 + @vercel/speed-insights@^1.2.0
+Wired en: app/layout.tsx (componentes <Analytics /> + <SpeedInsights />)
+Activación: automática en Vercel. En local y GitHub Pages son no-ops silenciosos.
+Dashboard: vercel.com → tu proyecto → Analytics tab
+
+------------------------------------------------------------------------
+9. CONTACT FORM (PENDIENTE — requiere acción del usuario)
+------------------------------------------------------------------------
+Archivo:  components/ContactForm.tsx, línea ~14
+Variable: const FORMSPREE_ENDPOINT = "";
+
+Para activar el formulario real:
+  1. Crear cuenta en https://formspree.io (plan free: 50 submissions/mes)
+  2. New Form → copiar URL tipo: https://formspree.io/f/XXXXXXXX
+  3. Pegar en FORMSPREE_ENDPOINT y hacer push
+
+Campos del formulario: nombre, empresa, email, tipo de proyecto, presupuesto, mensaje
+Honeypot anti-spam ya incluido (_gotcha input hidden)
+En demo mode: simula 900ms delay + success sin enviar nada
+
+------------------------------------------------------------------------
+10. SONIDO (COMPLETADO — off by defecto)
+------------------------------------------------------------------------
+Sistema 100% Web Audio API procedural (sin archivos de audio).
+Toggle en Nav → 3 barras pulsando. Estado persiste en localStorage.
+Sonidos: hover (2100Hz sine), click (1480→980Hz triangle), reveal (320+640Hz swell)
+Master gain: 0.18 (sutil, no intrusivo)
+
+------------------------------------------------------------------------
+11. PROBLEMAS CONOCIDOS Y FIXES
+------------------------------------------------------------------------
+1. OG image falla localmente en Windows con OneDrive (Hebrew path en fileURLToPath).
+   → No es bug del código. Funciona en Linux CI (GitHub Actions). Ignorar.
+
+2. reactStrictMode DEBE estar en false.
+   → Strict Mode hace double-mount en dev. El segundo mount encuentra
+     sessionStorage "momentum-intro-seen" = true y nunca muestra el Intro.
+
+3. OneDrive EINVAL readlink durante build.
+   → Fix: attrib +P en el directorio (ver sección 1 arriba).
+
+4. @splinetool/react-spline requiere webpack alias.
+   → Ya está configurado en next.config.mjs. No remover.
+
+5. SplitText: NO usar clases de gradiente-clip (bg-clip-text + color-transparent).
+   → El nested span pierde referencia del gradiente → texto invisible.
+   → Usar colores sólidos: text-momentum-chalk y text-momentum-magenta.
+
+6. npm audit reporta 2 vulns "moderate" en postcss bundleado dentro de next.
+   → Son false positives no accionables (next usa su propio postcss interno).
+   → El fix de npm requeriría bajar Next a v9 — obviamente no hacerlo.
+
+------------------------------------------------------------------------
+12. PRÓXIMOS PASOS SUGERIDOS
+------------------------------------------------------------------------
+[ ] Activar Formspree (requiere cuenta usuario — ver sección 9)
+[ ] Deploy a Vercel (importar repo en vercel.com/new)
+[ ] Agregar custom domain en Vercel + actualizar NEXT_PUBLIC_SITE_URL
+[ ] Slots Work 05 y 06: definir y agregar 2 más a lib/cases.ts
+[ ] Multi-idioma ES/EN: implementar next-intl o i18n routing de Next.js
+[ ] Testimonials section: sección de social proof adicional
+[ ] Blog/Insights: ruta /blog con MDX si quieren contenido SEO
+[ ] Actualizar textos placeholder (Work cards, About, Services) con copy real del cliente
+
+------------------------------------------------------------------------
+13. SEGURIDAD
+------------------------------------------------------------------------
+CVE-2025-66478 (CVSS 10.0 — RCE en React Server Components):
+  RESUELTO → Upgrade de Next.js 15.0.4 a 15.5.19 (backport security channel)
+  Fix aplicado: 2026-06-06
+
+Rotate secrets si el site estuvo online y sin parchear antes de Dic 4, 2025 1PM PT.
+En este proyecto: ninguna credencial hardcodeada. FORMSPREE_ENDPOINT está vacío.
+
+===========================================================================
+FIN DEL CONTEXTO
+===========================================================================
