@@ -3,7 +3,14 @@ import { CASE_STUDIES } from "@/lib/cases";
 
 export const dynamic = "force-static";
 
-const BASE = "https://frago10.github.io/Frago-Digital-Momentum";
+const VERCEL_URL = process.env.NEXT_PUBLIC_VERCEL_URL
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  : null;
+const BASE = (
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  VERCEL_URL ||
+  "https://frago10.github.io/Frago-Digital-Momentum"
+).replace(/\/$/, "");
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

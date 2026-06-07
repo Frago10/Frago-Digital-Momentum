@@ -1,22 +1,24 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 /* -------------------------------------------------------------------------- */
-/*  SPLINE INTEGRATION                                                        */
-/*                                                                            */
-/*  Por ahora rendereamos un fallback cinemático CSS+Motion (LiquidFallback)  */
-/*  que ya luce premium sin Spline.                                           */
-/*                                                                            */
-/*  CUANDO TENGAS TU SCENE URL:                                               */
-/*  1. En spline.design exporta → Code → copia el "Public URL" (.splinecode). */
-/*  2. Avísame con la URL y la cableo (requiere webpack alias en             */
-/*     next.config.mjs porque el paquete @splinetool/react-spline tiene un    */
-/*     exports field que Next/webpack no resuelve out of the box).            */
+/*  SPLINE INTEGRATION — Clarity Stream                                       */
+/*  Scene: https://my.spline.design/claritystream-47nWn6btZt2mxZghMzV4krxa/   */
+/*  Runtime: webpack alias in next.config.mjs makes the import resolvable.    */
 /* -------------------------------------------------------------------------- */
 
-const SPLINE_SCENE = ""; // intentionally empty — see note above
+const SPLINE_SCENE =
+  "https://prod.spline.design/claritystream-47nWn6btZt2mxZghMzV4krxa/scene.splinecode";
+
+// Dynamic + ssr:false so the ~600KB runtime never blocks first paint and
+// never tries to render server-side (Spline relies on the browser globals).
+const SplineEmbed = dynamic(() => import("./SplineEmbed"), {
+  ssr: false,
+  loading: () => null,
+});
 
 /* -------------------------------------------------------------------------- */
 /*  Fallback — cinematic liquid blob scene (pure CSS + Motion)                */
@@ -192,8 +194,16 @@ export function Manifesto() {
         style={{ y: sceneY }}
         className="absolute inset-0 z-0"
       >
-        {sceneActive && <LiquidFallback />}
-        {/* When SPLINE_SCENE is configured, swap LiquidFallback for SplineEmbed */}
+        {sceneActive &&
+          (SPLINE_SCENE ? (
+            <Suspense fallback={<LiquidFallback />}>
+              <div className="absolute inset-0">
+                <SplineEmbed scene={SPLINE_SCENE} />
+              </div>
+            </Suspense>
+          ) : (
+            <LiquidFallback />
+          ))}
       </motion.div>
 
       {/* Tinted vignette overlay */}

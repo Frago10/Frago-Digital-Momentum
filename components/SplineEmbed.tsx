@@ -1,32 +1,22 @@
 "use client";
 
 /**
- * Placeholder wrapper for the @splinetool/react-spline embed.
+ * Spline runtime wrapper.
  *
- * NOT WIRED YET — the package's `exports` field in package.json restricts
- * what paths webpack can resolve, and the standard `@splinetool/react-spline/next`
- * import fails under Next.js 15 + App Router.
- *
- * When the user provides a Spline scene URL:
- *  1. Add this webpack alias to next.config.mjs:
- *
- *     import path from 'node:path';
- *     webpack: (config) => {
- *       config.resolve.alias['@splinetool/react-spline/next'] = path.resolve(
- *         './node_modules/@splinetool/react-spline/dist/react-spline-next.js'
- *       );
- *       return config;
- *     }
- *
- *  2. Re-enable the import below and the dynamic loader in Manifesto.tsx.
+ * The @splinetool/react-spline package ships ESM-only with a strict `exports`
+ * map that confuses Next.js's resolver. We work around it with a webpack
+ * alias in next.config.mjs that points `@splinetool/react-spline/next`
+ * directly at the built file. With that in place this normal import works.
  */
-
-// import Spline from "@splinetool/react-spline/next";
+import Spline from "@splinetool/react-spline/next";
 
 export default function SplineEmbed({ scene }: { scene: string }) {
   return (
-    <div className="absolute inset-0 grid place-items-center text-momentum-mist/40">
-      Spline wrapper · scene: {scene}
-    </div>
+    <Spline
+      scene={scene}
+      // Hide the default Spline watermark / logo if Spline's TOS allows.
+      // Keeping these props as a hint to anyone reading — they require the
+      // paid plan to actually take effect.
+    />
   );
 }

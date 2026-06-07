@@ -4,11 +4,18 @@ import { Cursor } from "@/components/Cursor";
 import { Intro } from "@/components/Intro";
 import { SoundSystem } from "@/components/SoundSystem";
 
-// metadataBase is the bare origin so Next.js can compose URLs with basePath
-// once, without doubling it (which produced /Frago-Digital-Momentum/Frago-...
-// in og:image previously).
-const ORIGIN = "https://frago10.github.io";
-const SITE_URL = `${ORIGIN}/Frago-Digital-Momentum`;
+// Site URL is configurable per deploy target.
+//  - Vercel (primary): NEXT_PUBLIC_SITE_URL is set in the project settings
+//    once a custom domain is attached; until then VERCEL_URL is used.
+//  - GitHub Pages (fallback): falls through to the github.io URL.
+const VERCEL_URL = process.env.NEXT_PUBLIC_VERCEL_URL
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+  : null;
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  VERCEL_URL ||
+  "https://frago10.github.io/Frago-Digital-Momentum";
+const ORIGIN = new URL(SITE_URL).origin;
 
 export const metadata: Metadata = {
   metadataBase: new URL(ORIGIN),

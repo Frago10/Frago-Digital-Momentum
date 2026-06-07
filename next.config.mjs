@@ -1,9 +1,15 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
 /** @type {import('next').NextConfig} */
 
-// Static-export mode is opt-in via env var so local `npm run dev` stays normal.
-// GitHub Actions sets GITHUB_PAGES=true to build a static site for Pages.
+// Static-export mode is opt-in via env var.
+// Vercel deploys (default) use standard Next.js server rendering, no basePath.
+// GitHub Actions sets GITHUB_PAGES=true to build a subpath static site.
 const isGithubPages = process.env.GITHUB_PAGES === "true";
-const repoBase = "/Frago-Digital-Momentum"; // repo name → Pages subpath
+const repoBase = "/Frago-Digital-Momentum";
 
 const nextConfig = {
   reactStrictMode: false,
@@ -11,16 +17,30 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ["motion", "@react-three/drei", "lenis"],
   },
-  // Tell next/image to skip server-side optimization — required for static export.
+  // Required for static export (no-op on Vercel since Vercel handles images).
   images: { unoptimized: true },
-  // Static export config — only applied when targeting GitHub Pages.
+
+  // Webpack alias — bypasses @splinetool/react-spline's restrictive `exports`
+  // field so Next/webpack can actually resolve the next-aware build.
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      "@splinetool/react-spline/next": path.resolve(
+        __dirname,
+        "node_modules/@splinetool/react-spline/dist/react-spline-next.js",
+      ),
+    };
+    return config;
+  },
+
+  // Static-export overrides — only active when targeting GitHub Pages.
   ...(isGithubPages && {
     output: "export",
     basePath: repoBase,
     assetPrefix: `${repoBase}/`,
     trailingSlash: true,
   }),
-  // Expose base path to client components so we can prefix asset URLs ourselves.
+
   env: {
     NEXT_PUBLIC_BASE_PATH: isGithubPages ? repoBase : "",
   },
